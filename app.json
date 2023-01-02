@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "AwesomeProject4",
+    "name": "DOJU",
     "slug": "AwesomeProject4",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo1.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -21,13 +21,16 @@
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+      "adaptiveIcon": "./assets/logo1.png",
+      "package": "com.abhishekmittal.AwesomeProject4"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1dc0f6ac-b687-4924-87d1-5690e39bf52b"
+      }
     }
   }
 }
