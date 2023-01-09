@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "63858038626",
+    "project_id": "loyal-venture-340912",
+    "storage_bucket": "loyal-venture-340912.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63858038626:android:fbf6346d57ea5056397e3b",
+        "android_client_info": {
+          "package_name": "com.abhishekmittal.AwesomeProject4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "63858038626-o5db0vff3ns2mf8nk9gov1i5cm170fjp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmAYFIsWU6HqP1Zt6LGTugP7qgzg9JykI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "63858038626-o5db0vff3ns2mf8nk9gov1i5cm170fjp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

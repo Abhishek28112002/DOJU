@@ -15,56 +15,38 @@ const marginBottomItem = 20;
 const paddingItem = 10;
 const imgHeight = 100;
 const FlatListComponent = ({ data }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modeldata, setmodeldata] = useState();
-  const renderItem = ({ item, index }) => {
-    return (
-      <TouchableOpacity
-        key={index}
-        onPress={() => {
-          console.log("llj");
-          setmodeldata(item);
-          setModalVisible(true);
-          console.log({ item });
+const [modalVisible, setModalVisible] = useState(false);
+const [modeldata, setmodeldata] = useState();
+const renderItem = ({ item, index }) => {
+return (
+  <TouchableOpacity
+    key={index}
+    onPress={() => {
+      setmodeldata(item);
+      setModalVisible(true);
+    }}
+    style={{ width: "49%" }}
+  >
+    <View style={styles.item}>
+      <Image
+        style={styles.avatar}
+        source={{
+          uri: `${item.image}`,
         }}
-      >
-        <View style={styles.item}>
-          <Image
-            style={styles.avatar}
-            source={{
-              uri: `${item.image}`,
-            }}
-            resizeMode="contain"
-            contentContainerStyle={{ padding: 20 }}
-          />
-          <View style={styles.wrapText}>
-            <Text style={styles.fontSize}> {`${item.username}`}</Text>
-            <Text style={styles.fontSize}>
-              <Text style={{ color: "red" }}>Father Name: </Text> {`${item.fathername}`}
-            </Text>
-            <Text style={styles.fontSize}>
-              <Text style={{ color: "red" }}>Section: </Text> {`${item.section}`}
-            </Text>
-            <Text style={styles.fontSize}>
-              <Text style={{ color: "red" }}>FIR NO: </Text> {`${item.fir}`}
-            </Text>
-            <Text style={styles.fontSize}>
-              <Text style={{ color: "red" }}>CourtName: </Text>
-              {`${item.courtname}`}
-            </Text>
-            <Text style={styles.fontSize}>
-              
-              <Text style={{ color: "red" }}>Address: </Text> {`${item.address}`}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
+        resizeMode="contain"
+      />
+
+      <Text style={styles.fontSize}> {`${item.username}`}</Text>
+      <Text style={styles.fontSize}>{`${item.fathername}`}</Text>
+      <Text>{`${item.address}`}</Text>
+    </View>
+  </TouchableOpacity>
+);
   };
   return (
     <>
       <SafeAreaView style={styles.root}>
-        <FlatList data={data} renderItem={renderItem} />
+        <FlatList numColumns={2} data={data} renderItem={renderItem} />
         <Modal
           animationType="slide"
           transparent={true}
@@ -95,11 +77,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     justifyContent: "center",
   },
-
   item: {
-    flexDirection: "row",
+    alignItems: "center",
+    height: 210,
+    overflowY: "hidden",
     marginBottom: 2,
-    borderRadius: 10,
+    marginRight: 1,
     backgroundColor: "#fff",
     shadowColor: "#000",
     shadowOffset: {
@@ -108,7 +91,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 30,
-    padding: paddingItem,
+    padding: 4,
   },
   container: {
     flex: 1,
@@ -118,6 +101,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 63,
     borderWidth: 4,
+
     borderColor: "white",
   },
 });

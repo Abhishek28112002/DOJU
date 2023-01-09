@@ -26,11 +26,13 @@ const SigninScreen = () => {
   const { control, handleSubmit } = useForm();
 
   const onSignInPress = async (data) => {
-    console.log("Data ", data);
-
+ 
+    const apptoken=await AsyncStorage.getItem("AppToken");
+    console.log(apptoken)
+    data.apptoken=apptoken;
+    console.log(data);
     const requestOptions = {
       method: "POST",
-      // headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data),
     };
     try {
@@ -39,11 +41,9 @@ const SigninScreen = () => {
         requestOptions
       ).then((response) => {
         response.json().then(async (data) => {
-          console.log(data);
           if (data.status == "sucess") {
             await storeuser(data.user);
             const datauser = await getuser();
-            console.log(datauser);
             await storeSession(data.token);
             navigation.navigate("Home");
           } else Alert.alert(data.message);

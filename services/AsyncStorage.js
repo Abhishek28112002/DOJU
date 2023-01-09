@@ -13,6 +13,21 @@ const getSession = async () => {
   try {
     const session = await AsyncStorage.getItem('session');
     if (session !== null) {
+      const data=await getuser();
+      
+      
+      const requestOptions = {
+        method: "POST",
+        body: data,
+      };
+        await fetch(
+          "https://pxssd9y628.execute-api.ap-south-1.amazonaws.com/prod/loggedin",
+          requestOptions
+        ).then((response) => {
+          response.json().then(async (data) => {
+            console.log(data);
+          });
+        });
       return session;
     }
   } catch (error) {
