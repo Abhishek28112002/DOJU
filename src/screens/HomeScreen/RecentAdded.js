@@ -7,28 +7,43 @@ import {
   StyleSheet,
   Alert,
   TouchableOpacity,
+  ToastAndroid,
   Image,
 } from "react-native";
 import FlatListComponent from "./FlatListComponent";
+import Icon from "react-native-vector-icons/FontAwesome";
 import CustomInput from "../../components/CustomInput";
-import RefreshIcon from "../../../assets/images/refreshIcon.png";
-
+import { Fetchgetapi } from "../../../services/Apicalls";
 const RecentAdded = () => {
+  const[modal,setmodal]=useState(true);
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
   const [filteredDataSource, setFilteredDataSource] = useState([]);
 
-  //  Location.setGoogleApiKey("AIzaSyD5GUOMMrDY5Ml8JOQ5j7z7p9f8GaGCDBg");
-  const [refreshing, setRefreshing] = React.useState(false);
-
   const getData = async () => {
     try {
-      const row = await fetch(
-        "https://pxssd9y628.execute-api.ap-south-1.amazonaws.com/prod/record"
-      );
-      const dt = await row.json();
+      const dt = await Fetchgetapi("record");
+      await dt.Items.sort(function (a, b) {
+        if (a.date < b.date) {
+          return 1;
+        }
+        if (a.date > b.date) {
+          return -1;
+        }
+        return 0;
+      });
+      await dt.Items.sort(function (a, b) {
+        if(a.solved && b.solved)
+        return 0;
+        if(a.solved)
+        return 1;
+        if(b.solved)
+        return -1
+     
+      });
       setData(dt.Items.slice(0, 100));
       setFilteredDataSource(dt.Items.slice(0, 100));
+      ToastAndroid.show("Data Updated", ToastAndroid.SHORT);
     } catch (error) {
       console.log(error);
     }
@@ -36,9 +51,9 @@ const RecentAdded = () => {
   useEffect(() => {
     getData();
   }, []);
-
-  const searchFilterFunction = (text) => {
+  const searchFilterFunction = async (text) => {
     setSearch(text);
+
     if (text.length > 0) {
       const newData = data.filter(function (item) {
         let itemData = item.username
@@ -88,6 +103,7 @@ const RecentAdded = () => {
 
   return (
     <>
+
       <View
         style={{
           display: "flex",
@@ -105,13 +121,14 @@ const RecentAdded = () => {
           style={{ position: "absolute", alignSelf: "center", right: 10 }}
           onPress={() => getData()}
         >
-          <Image style={styles.tinyLogo} source={RefreshIcon} />
+          <Icon name={"refresh"} size={25} />
         </TouchableOpacity>
       </View>
-
+<View>
       {filteredDataSource.length > 0 && (
-        <FlatListComponent data={filteredDataSource} />
+        <FlatListComponent data={filteredDataSource} onHide={()=>setmodal(false)} />
       )}
+      </View>
     </>
   );
 };
@@ -123,8 +140,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   tinyLogo: {
-    width: 50,
-    height: 50,
+    width: 30,
+    height: 30,
   },
   textInputStyle: {
     height: 44,

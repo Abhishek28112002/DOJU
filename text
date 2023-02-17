@@ -1,0 +1,4 @@
+for updating:
+change currentversion to +1 in app.json
+then build abb file :eas build --platform android
+then publish :eas submit -p android --latest

@@ -20,42 +20,29 @@ import {
   getuser,
 } from "../../../services/AsyncStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Fetchpostapi, Fetchgetapi } from "../../../services/Apicalls";
 const SigninScreen = () => {
   const { height } = useWindowDimensions();
   const navigation = useNavigation();
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, reset } = useForm();
 
   const onSignInPress = async (data) => {
- 
-    const apptoken=await AsyncStorage.getItem("AppToken");
-    console.log(apptoken)
-    data.apptoken=apptoken;
-    console.log(data);
-    const requestOptions = {
-      method: "POST",
-      body: JSON.stringify(data),
-    };
+    const apptoken = await AsyncStorage.getItem("AppToken");
+    data.apptoken = apptoken;
     try {
-      await fetch(
-        "https://pxssd9y628.execute-api.ap-south-1.amazonaws.com/prod/login",
-        requestOptions
-      ).then((response) => {
-        response.json().then(async (data) => {
-          if (data.status == "sucess") {
-            await storeuser(data.user);
-            const datauser = await getuser();
-            await storeSession(data.token);
-            navigation.navigate("Home");
-          } else Alert.alert(data.message);
-        });
-      });
+      const response = await Fetchpostapi("login",data);
+      if (response.status == "sucess") {
+        reset();
+        storeuser(response.user);
+        storeSession(response.token);
+        navigation.navigate("Home");
+      } else Alert.alert(response.message);
     } catch (error) {
       console.error(error);
     }
   };
   const onForgotPasswordPressed = () => {
-     navigation.navigate("ForgotPassword");
-    
+    navigation.navigate("ForgotPassword");
   };
 
   const onSignupPressed = () => {
@@ -103,13 +90,13 @@ const styles = StyleSheet.create({
     padding: 28,
   },
   logo: {
-    width: 150,
-    height: 150,
-    borderColor: "white",
+    width: 100,
+    height: 100,
+    borderColor: "black",
     borderWidth: 2,
     borderRadius: 100,
     marginBottom: 20,
-    marginTop: 50,
+    marginTop: 120,
   },
 });
 

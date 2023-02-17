@@ -8,55 +8,100 @@ import {
   StatusBar,
   Modal,
   TouchableOpacity,
+  ToastAndroid,
 } from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import React, { useState } from "react";
 import ModelUser from "./ModelUserProfile";
-const marginBottomItem = 20;
-const paddingItem = 10;
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Fetchpostapi } from "../../../services/Apicalls";
 const imgHeight = 100;
-const FlatListComponent = ({ data }) => {
-const [modalVisible, setModalVisible] = useState(false);
-const [modeldata, setmodeldata] = useState();
-const renderItem = ({ item, index }) => {
-return (
-  <TouchableOpacity
-    key={index}
-    onPress={() => {
-      setmodeldata(item);
-      setModalVisible(true);
-    }}
-    style={{ width: "49%" }}
-  >
-    <View style={styles.item}>
-      <Image
-        style={styles.avatar}
-        source={{
-          uri: `${item.image}`,
+const FlatListComponent = (props) => {
+  let data = props.data;
+  const [modalVisible, setModalVisible] = useState(true);
+  const [modeldata, setmodeldata] = useState();
+  const DelteData = async ({ date }) => {
+    let user = await AsyncStorage.getItem("user");
+    user = JSON.parse(user);
+    try {
+      const data = await Fetchpostapi("deletewatchlater", {
+        userId: user.username,
+        date: date,
+      });
+      if (data.status == "sucess") {
+        ToastAndroid.show(
+          "Record Removed from Watch Later List",
+          ToastAndroid.SHORT
+        );
+      } else Alert.alert(data.message);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const renderItem = ({ item, index }) => {
+    return (
+      <TouchableOpacity
+        key={index}
+        onPress={() => {
+          setmodeldata(item);
+          setModalVisible(false);
         }}
-        resizeMode="contain"
-      />
-
-      <Text style={styles.fontSize}> {`${item.username}`}</Text>
-      <Text style={styles.fontSize}>{`${item.fathername}`}</Text>
-      <Text>{`${item.address}`}</Text>
-    </View>
-  </TouchableOpacity>
-);
+        style={{ width: "49%" }}
+      >
+        <View style={styles.item}>
+          {props.watchlatar == "yes" && (
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                alignSelf: "center",
+                right: 10,
+                top: 10,
+                fontSize: 20,
+                fontWeight: "bold",
+              }}
+              onPress={() => DelteData(item)}
+            >
+              <Icon name={"delete"} size={20} color={"red"} />
+            </TouchableOpacity>
+          )}
+          <Image
+            style={styles.avatar}
+            source={{
+              uri: `${item.image}`,
+            }}
+            resizeMode="contain"
+          />
+          {item.solved ? (
+            <Text style={styles.fontSize} style={{ color: "green" }}>
+              {`${item.username}`}
+            </Text>
+          ) : (
+            <Text style={styles.fontSize} style={{ color: "red" }}>
+              {`${item.username}`}
+            </Text>
+          )}
+          <Text
+            style={styles.fontSize}
+            style={{ color: "blue" }}
+          >{`${item.fathername}`}</Text>
+          <Text>{`${item.address}`}</Text>
+        </View>
+      </TouchableOpacity>
+    );
   };
   return (
     <>
       <SafeAreaView style={styles.root}>
-        <FlatList numColumns={2} data={data} renderItem={renderItem} />
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <ModelUser data={modeldata} />
-        </Modal>
+        {modalVisible ? (
+          <FlatList
+            numColumns={2}
+            initialNumToRender={6}
+            data={data}
+            renderItem={renderItem}
+          />
+        ) : (
+          <ModelUser data={modeldata} onhide={() => setModalVisible(true)} />
+        )}
       </SafeAreaView>
     </>
   );
@@ -101,7 +146,6 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 63,
     borderWidth: 4,
-
     borderColor: "white",
   },
 });

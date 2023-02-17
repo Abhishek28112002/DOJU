@@ -7,28 +7,75 @@ import {
   StyleSheet,
   Alert,
   TouchableOpacity,
+  ToastAndroid,
   Image,
 } from "react-native";
 import FlatListComponent from "./FlatListComponent";
+import Icon from "react-native-vector-icons/FontAwesome";
 import CustomInput from "../../components/CustomInput";
-import RefreshIcon from "../../../assets/images/refreshIcon.png";
 
+import { getaddress } from "../../../services/AsyncStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Fetchgetapi } from "../../../services/Apicalls";
 const RecentAdded = () => {
+  const[visiblesearch,setvisiblesearch] =useState(true);
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
   const [filteredDataSource, setFilteredDataSource] = useState([]);
-
-  //  Location.setGoogleApiKey("AIzaSyD5GUOMMrDY5Ml8JOQ5j7z7p9f8GaGCDBg");
-  const [refreshing, setRefreshing] = React.useState(false);
-
+const[tamil,setTamil] = useState(0);
   const getData = async () => {
+    setTamil(0);
     try {
-      const row = await fetch(
-        "https://pxssd9y628.execute-api.ap-south-1.amazonaws.com/prod/record"
-      );
-      const dt = await row.json();
-      setData(dt.Items);
+      const dt = await Fetchgetapi("record");
+      await dt.Items.sort(function (a, b) {
+       
+       
+        if (a.username < b.username) {
+          return -1;
+        }
+        if (a.username > b.username) {
+          return 1;
+        }
+       
+        return 0;
+      });
+      await dt.Items.sort(function (a, b) {
+        if(a.solved && b.solved)
+        return 0;
+        if(a.solved)
+        return 1;
+        if(b.solved)
+        return -1
+     
+      });
+      await dt.Items.map((user)=>{
+        if(user.solved)
+        setTamil((tamil)=>tamil+1);
+      })
+      
+      // let textData1 = await AsyncStorage.getItem("Address");
+      // textData1 = JSON.parse(textData1);
+      // if (textData1 != null) {
+      //   await dt.Items.sort(function (a, b) {
+      //     for (let city of textData1) {
+      //       if (a.address.indexOf(city) > -1 && b.address.indexOf(city) == -1 && !a.solved ) {
+      //         return -1;
+      //       }
+      //       if (a.address.indexOf(city) == -1 && b.address.indexOf(city) > -1 && !b.solved) {
+      //         return 1;
+      //       }
+      //       if(a.solved)
+      //     return 1;
+      //     if(b.solved)
+      //     return -1;
+      //     }
+         
+      //     return 0;
+      //   });
+      // }
       setFilteredDataSource(dt.Items);
+      setData(dt.Items);
+      ToastAndroid.show("Data Updated", ToastAndroid.SHORT);
     } catch (error) {
       console.log(error);
     }
@@ -37,8 +84,9 @@ const RecentAdded = () => {
     getData();
   }, []);
 
-  const searchFilterFunction = (text) => {
+  const searchFilterFunction = async (text) => {
     setSearch(text);
+
     if (text.length > 0) {
       const newData = data.filter(function (item) {
         let itemData = item.username
@@ -88,6 +136,8 @@ const RecentAdded = () => {
 
   return (
     <>
+   
+ 
       <View
         style={{
           display: "flex",
@@ -102,11 +152,23 @@ const RecentAdded = () => {
           placeholder="Search here"
         />
         <TouchableOpacity
-          style={{ position: "absolute", alignSelf: "center", right: 10 }}
+          style={{ position: "absolute", alignSelf: "center", right: 7 }}
           onPress={() => getData()}
         >
-          <Image style={styles.tinyLogo} source={RefreshIcon} />
+          <Icon name={"refresh"} size={25} />
         </TouchableOpacity>
+        <Text
+          style={{
+            position: "absolute",
+            alignSelf: "center",
+            right: 35,
+            color: "red",
+            fontWeight: "bold",
+            fontSize: 20,
+          }}
+        >
+          {filteredDataSource.length}/{tamil}
+        </Text>
       </View>
 
       {filteredDataSource.length > 0 && (
@@ -123,8 +185,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   tinyLogo: {
-    width: 50,
-    height: 50,
+    width: 30,
+    height: 30,
   },
   textInputStyle: {
     height: 44,

@@ -1,18 +1,22 @@
 {
+  "cli": {
+    "version": ">= 3.2.1"
+  },
   "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
     "preview": {
-      "android": {
-        "buildType": "apk"
-      }
-    },
-    "preview2": {
-      "android": {
-        "gradleCommand": ":app:assembleRelease"
-      }
-    },
-    "preview3": {
-      "developmentClient": true
+      "distribution": "internal"
     },
     "production": {}
+  },
+  "submit": {
+    "production": {
+      "android":{
+        "serviceAccountKeyPath":"./pc-api-4958370951325270252-782-7fc1e660a872.json"
+      }
+    }
   }
 }

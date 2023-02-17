@@ -1,6 +1,5 @@
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export const useNotification=()=>{
    const registerForPushNotificationsAsync = async () => {
@@ -16,20 +15,11 @@ export const useNotification=()=>{
             return;
           }
           const token = (await Notifications.getExpoPushTokenAsync()).data;
-          await AsyncStorage.setItem("AppToken",JSON.stringify(token));
+        AsyncStorage.setItem("AppToken",JSON.stringify(token));
           console.log("token",token);
          
         } else {
           alert('Must use physical device for Push Notifications');
-        }
-      
-        if (Platform.OS === 'android') {
-          Notifications.setNotificationChannelAsync('default', {
-            name: 'default',
-            importance: Notifications.AndroidImportance.MAX,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: '#FF231F7C',
-          });
         }
       };
       const handleNotification = (notification: Notifications.Notification) => {

@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const storeSession = async value => {
   try {
-    await AsyncStorage.setItem('session', value);
+    await AsyncStorage.setItem('sessionn', value);
   } catch (error) {
     console.log(error.message);
   }
@@ -11,16 +11,14 @@ const storeSession = async value => {
 
 const getSession = async () => {
   try {
-    const session = await AsyncStorage.getItem('session');
+    const session = await AsyncStorage.getItem('sessionn');
     if (session !== null) {
       const data=await getuser();
-      
-      
       const requestOptions = {
         method: "POST",
         body: data,
       };
-        await fetch(
+         fetch(
           "https://pxssd9y628.execute-api.ap-south-1.amazonaws.com/prod/loggedin",
           requestOptions
         ).then((response) => {
@@ -37,7 +35,7 @@ const getSession = async () => {
 
 const removeSession = async () => {
   try {
-    await AsyncStorage.removeItem('session');
+    await AsyncStorage.removeItem('sessionn');
   } catch (error) {
     console.log(error);
   }
@@ -65,6 +63,28 @@ const getuser = async () => {
   }
 };
 
+const storeaddress = async value => {
+  value=JSON.stringify(value);
+  try {
+    await AsyncStorage.setItem("Address", value);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
+const getaddress = async () => {
+  try {
+    const session = await AsyncStorage.getItem("Address");
+    if (session !== null) {
+      return session;
+    }
+  } catch (error) {
+    return "";
+    console.log(error);
+  }
+};
+
 const removeuser = async () => {
   try {
     await AsyncStorage.removeItem("user");
@@ -73,5 +93,5 @@ const removeuser = async () => {
   }
 };
 
-export {storeSession, getSession, removeSession,storeuser, getuser, removeuser};
+export {storeSession, getSession, removeSession,storeuser, getuser, removeuser,storeaddress, getaddress };
 
